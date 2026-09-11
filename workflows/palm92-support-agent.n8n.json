@@ -1,0 +1,26 @@
+{
+  "name": "Palm92 Documentation-Grounded Support Agent",
+  "nodes": [
+    {"parameters":{"httpMethod":"POST","path":"palm92-support","responseMode":"responseNode"},"id":"webhook","name":"Customer Question","type":"n8n-nodes-base.webhook","typeVersion":2,"position":[0,0]},
+    {"parameters":{"assignments":{"assignments":[{"name":"question","value":"={{ $json.body.question }}","type":"string"},{"name":"caseId","value":"={{ 'P92-' + $now.toFormat('yyyyMMdd-HHmmss') }}","type":"string"},{"name":"channel","value":"={{ $json.body.channel || 'website' }}","type":"string"}]}},"id":"normalise","name":"Normalise and Create Case","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[220,0]},
+    {"parameters":{"method":"POST","url":"={{ $env.PALM92_RETRIEVAL_URL }}","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"={{ 'Bearer ' + $env.PALM92_RETRIEVAL_TOKEN }}"}]},"sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ JSON.stringify({ query: $json.question, topK: 4, collection: 'approved-support' }) }}"},"id":"retrieve","name":"Search Approved Help Docs","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[450,0]},
+    {"parameters":{"conditions":{"options":{"caseSensitive":false},"conditions":[{"leftValue":"={{ $json.matches?.length || 0 }}","rightValue":0,"operator":{"type":"number","operation":"gt"}},{"leftValue":"={{ $json.topScore || 0 }}","rightValue":0.78,"operator":{"type":"number","operation":"gte"}}],"combinator":"and"}},"id":"evidence","name":"Reliable Evidence Found?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[690,0]},
+    {"parameters":{"method":"POST","url":"https://api.openai.com/v1/responses","sendHeaders":true,"headerParameters":{"parameters":[{"name":"Authorization","value":"={{ 'Bearer ' + $env.OPENAI_API_KEY }}"}]},"sendBody":true,"contentType":"raw","rawContentType":"application/json","body":"={{ JSON.stringify({ model: $env.OPENAI_MODEL || 'gpt-5-mini', input: [{ role: 'system', content: 'Answer only from the supplied approved excerpts. Be concise. Cite article titles. If the customer already tried the documented step, asks about a sensitive matter, or the evidence is insufficient, output ESCALATE with a one-sentence reason. Never request passwords or secrets.' }, { role: 'user', content: 'Question: ' + $('Normalise and Create Case').item.json.question + '\\nApproved excerpts: ' + JSON.stringify($json.matches) }] }) }}"},"id":"draft","name":"Draft Grounded Answer","type":"n8n-nodes-base.httpRequest","typeVersion":4.2,"position":[940,-100]},
+    {"parameters":{"conditions":{"options":{"caseSensitive":false},"conditions":[{"leftValue":"={{ $json.output_text || '' }}","rightValue":"ESCALATE","operator":{"type":"string","operation":"notStartsWith"}}],"combinator":"and"}},"id":"safe","name":"Safe to Answer?","type":"n8n-nodes-base.if","typeVersion":2.2,"position":[1180,-100]},
+    {"parameters":{"respondWith":"json","responseBody":"={{ { answer: $json.output_text, caseId: $('Normalise and Create Case').item.json.caseId, status: 'answered' } }}"},"id":"answer","name":"Answer Customer","type":"n8n-nodes-base.respondToWebhook","typeVersion":1.4,"position":[1420,-180]},
+    {"parameters":{"assignments":{"assignments":[{"name":"answer","value":"I cannot confirm this from Palm92's approved support information. I have referred your question for human review.","type":"string"},{"name":"status","value":"escalated","type":"string"},{"name":"reason","value":"Insufficient evidence, failed guidance, sensitive matter, or edge case","type":"string"}]}},"id":"handover","name":"Prepare Human Handover","type":"n8n-nodes-base.set","typeVersion":3.4,"position":[1180,180]},
+    {"parameters":{"respondWith":"json","responseBody":"={{ { answer: $json.answer, caseId: $('Normalise and Create Case').item.json.caseId, status: 'escalated' } }}"},"id":"escalated","name":"Confirm Escalation","type":"n8n-nodes-base.respondToWebhook","typeVersion":1.4,"position":[1420,180]}
+  ],
+  "connections": {
+    "Customer Question":{"main":[[{"node":"Normalise and Create Case","type":"main","index":0}]]},
+    "Normalise and Create Case":{"main":[[{"node":"Search Approved Help Docs","type":"main","index":0}]]},
+    "Search Approved Help Docs":{"main":[[{"node":"Reliable Evidence Found?","type":"main","index":0}]]},
+    "Reliable Evidence Found?":{"main":[[{"node":"Draft Grounded Answer","type":"main","index":0}],[{"node":"Prepare Human Handover","type":"main","index":0}]]},
+    "Draft Grounded Answer":{"main":[[{"node":"Safe to Answer?","type":"main","index":0}]]},
+    "Safe to Answer?":{"main":[[{"node":"Answer Customer","type":"main","index":0}],[{"node":"Prepare Human Handover","type":"main","index":0}]]},
+    "Prepare Human Handover":{"main":[[{"node":"Confirm Escalation","type":"main","index":0}]]}
+  },
+  "settings":{"executionOrder":"v1","saveDataErrorExecution":"all","saveDataSuccessExecution":"all"},
+  "active":false,
+  "versionId":"00000000-0000-4000-8000-000000000092"
+}

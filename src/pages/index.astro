@@ -1,0 +1,78 @@
+---
+const products = [
+  { name: 'JobShield', label: 'Recruitment safety', copy: 'Examine recruitment messages, preserve evidence and surface warning signs without taking the final decision away from you.' },
+  { name: 'SafeVoice Intelligence', label: 'Safety reporting', copy: 'Turn multilingual voice, text and uploaded evidence into structured cases ready for accountable human review.' },
+  { name: 'Lead Recovery OS', label: 'Revenue recovery', copy: 'Investigate missed enquiries, prepare follow-up and pause for confirmation before an appointment is booked.' }
+];
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Palm92 Intelligence builds governed AI systems that investigate, explain and escalate while humans retain authority." />
+    <title>Palm92 Intelligence | Governed AI that earns trust</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Manrope:wght@500;600;700;800&display=swap" rel="stylesheet" />
+    <link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="nav shell">
+      <a class="brand" href="#top" aria-label="Palm92 home"><span>P92</span> Palm92 Intelligence</a>
+      <nav aria-label="Main navigation">
+        <a href="#systems">Systems</a><a href="#method">How it works</a><a href="/support">Support</a>
+      </nav>
+      <a class="button small" href="#pilot">Request a pilot</a>
+    </header>
+
+    <main id="top">
+      <section class="hero shell">
+        <div class="eyebrow">AI governance, risk and operational intelligence</div>
+        <h1>AI investigates.<br/><em>Humans decide.</em></h1>
+        <p class="lede">Palm92 builds explainable systems that perform permitted work, show their evidence and stop when human judgment is required.</p>
+        <div class="actions"><a class="button" href="#pilot">Request a pilot</a><a class="text-link" href="#systems">Explore the systems <span>↘</span></a></div>
+        <div class="proof-strip" aria-label="Palm92 operating principles">
+          <span>Evidence-linked outputs</span><span>Human approval gates</span><span>Auditable decisions</span><span>Privacy by design</span>
+        </div>
+      </section>
+
+      <section class="statement shell" id="method">
+        <p class="kicker">The Palm92 method</p>
+        <h2>Automation without accountability is just speed in the wrong direction.</h2>
+        <div class="method-grid">
+          <article><b>01</b><h3>Define</h3><p>Agree the outcome, permitted actions, evidence and stopping conditions.</p></article>
+          <article><b>02</b><h3>Investigate</h3><p>AI gathers facts, applies controlled logic and records provenance.</p></article>
+          <article><b>03</b><h3>Review</h3><p>People approve consequential actions and resolve uncertain edge cases.</p></article>
+          <article><b>04</b><h3>Prove</h3><p>Every material step leaves an audit-ready trail of evidence and decisions.</p></article>
+        </div>
+      </section>
+
+      <section class="systems shell" id="systems">
+        <p class="kicker">Selected systems</p>
+        <div class="section-head"><h2>Built around real decisions</h2><p>Focused products for costly, risky and repeatedly mishandled work.</p></div>
+        <div class="cards">
+          {products.map((product, index) => <article class="card"><span>0{index + 1} · {product.label}</span><h3>{product.name}</h3><p>{product.copy}</p><a href="#pilot">Discuss a pilot →</a></article>)}
+        </div>
+      </section>
+
+      <section class="case shell">
+        <div><p class="kicker">Governed by design</p><h2>The system knows when to stop.</h2></div>
+        <div class="case-flow"><span>Question received</span><span>Approved evidence found</span><span>Answer prepared</span><strong>Human escalation</strong></div>
+        <p>Common questions can be resolved in seconds. Missing evidence, repeated failure, frustration, security, privacy and high-impact decisions are handed to a person with the complete conversation and attempted steps.</p>
+      </section>
+
+      <section class="pilot shell" id="pilot">
+        <div><p class="kicker">Start with one bottleneck</p><h2>Bring us a repeated problem.<br/>We will map a controlled pilot.</h2></div>
+        <form action="mailto:hello@palm92.com" method="post" enctype="text/plain">
+          <label>Name<input required name="name" autocomplete="name" /></label>
+          <label>Email<input required type="email" name="email" autocomplete="email" /></label>
+          <label>What is slowing your organisation down?<textarea required name="problem" rows="4"></textarea></label>
+          <button class="button" type="submit">Request a pilot</button>
+          <small>No automatic commitment. A human reviews every request.</small>
+        </form>
+      </section>
+    </main>
+    <footer class="shell"><a class="brand" href="#top"><span>P92</span> Palm92 Intelligence</a><p>Governed AI for work that matters.</p><p>© 2026 Palm92 Intelligence</p></footer>
+  </body>
+</html>

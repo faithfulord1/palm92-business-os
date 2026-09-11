@@ -1,0 +1,41 @@
+---
+const webhookUrl = import.meta.env.PUBLIC_SUPPORT_WEBHOOK_URL || '';
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" /><meta name="viewport" content="width=device-width" />
+    <meta name="description" content="Ask Palm92 Support a question grounded in approved help documentation." />
+    <title>Palm92 Support</title><link rel="stylesheet" href="/styles.css" />
+  </head>
+  <body>
+    <header class="nav shell"><a class="brand" href="/"><span>P92</span> Palm92 Intelligence</a><a class="text-link" href="/">Return home</a></header>
+    <main class="support shell">
+      <div><p class="kicker">Documentation-grounded support</p><h1>How can we help?</h1><p class="lede">Ask about a Palm92 system. The assistant uses approved help material and escalates when it cannot support an answer.</p></div>
+      <section class="chat" data-webhook={webhookUrl}>
+        <div id="messages" aria-live="polite"><div class="message agent">Hello. I can answer questions supported by Palm92’s approved help documentation. What do you need help with?</div></div>
+        <form id="support-form"><label class="sr-only" for="question">Your question</label><textarea id="question" required rows="3" placeholder="Type your question..."></textarea><button class="button" type="submit">Send question</button></form>
+        <p class="privacy">Do not include passwords, payment details or highly sensitive personal information. Complex or high-risk matters are escalated to a human.</p>
+      </section>
+    </main>
+    <script>
+      const chat = document.querySelector('.chat');
+      const form = document.querySelector('#support-form');
+      const input = document.querySelector('#question');
+      const messages = document.querySelector('#messages');
+      const add = (text: string, role: 'agent' | 'customer') => { const node = document.createElement('div'); node.className = `message ${role}`; node.textContent = text; messages?.append(node); };
+      form?.addEventListener('submit', async (event) => {
+        event.preventDefault();
+        if (!(input instanceof HTMLTextAreaElement) || !input.value.trim()) return;
+        const question = input.value.trim(); add(question, 'customer'); input.value = '';
+        const webhook = chat instanceof HTMLElement ? chat.dataset.webhook : '';
+        if (!webhook) { add('The support agent is in preview mode. Your question would be checked against approved documentation and escalated if no supported answer is found.', 'agent'); return; }
+        try {
+          const response = await fetch(webhook, { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ question, channel: 'website' }) });
+          if (!response.ok) throw new Error('Support request failed');
+          const data = await response.json(); add(data.answer || 'Your question has been sent for human review.', 'agent');
+        } catch { add('I could not safely answer right now. Your question needs human review.', 'agent'); }
+      });
+    </script>
+  </body>
+</html>
