@@ -33,3 +33,7 @@ The template is inactive by default. Add an authenticated case store and a human
 ## Governance
 
 The agent may answer only from approved documentation. It must escalate uncertainty, failed guidance, frustration, suspected bugs and sensitive matters. See `knowledge-base/support-policy.md` and `docs/INCIDENT-RESPONSE.md`.
+
+## Private Analyst workspace
+
+The new [Palm92 Private Analyst](workflow_hub/README.md) is a separate local application within this repository. It provides encrypted evidence storage, reviewed redaction, GRC/TPRM guidance and controlled communication drafts. It is not part of the public Astro deployment. Start with fictional data; read its privacy boundaries and installation status before using organisational records.

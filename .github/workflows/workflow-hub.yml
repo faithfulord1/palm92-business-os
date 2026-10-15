@@ -1,0 +1,37 @@
+name: Private Workflow Hub
+on:
+  push:
+    paths: ['workflow_hub/**', '.github/workflows/workflow-hub.yml']
+  pull_request:
+    paths: ['workflow_hub/**', '.github/workflows/workflow-hub.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r workflow_hub/requirements.txt
+      - run: python -m unittest discover -s workflow_hub/tests -v
+  windows-app:
+    runs-on: windows-latest
+    needs: test
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: pip install -r workflow_hub/requirements.txt pyinstaller
+      - run: python -m unittest discover -s workflow_hub/tests -v
+      - name: Package private desktop application
+        working-directory: workflow_hub
+        run: pyinstaller --noconfirm --clean --onedir --windowed --name Palm92PrivateAnalyst --add-data "dashboard.html;." desktop.py
+      - uses: actions/upload-artifact@v4
+        with:
+          name: Palm92PrivateAnalyst-Windows
+          path: workflow_hub/dist/Palm92PrivateAnalyst/
+          retention-days: 14
