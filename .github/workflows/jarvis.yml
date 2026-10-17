@@ -1,0 +1,26 @@
+name: Jarvis recovery checks
+on:
+  pull_request:
+    paths: ['tools/jarvis/**', '.github/workflows/jarvis.yml']
+  push:
+    paths: ['tools/jarvis/**', '.github/workflows/jarvis.yml']
+jobs:
+  offline:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest discover -s tools/jarvis -p 'test_*.py' -v
+      - run: node --check tools/jarvis/dist/app.js
+  launcher:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - shell: pwsh
+        run: |
+          $tokens = $null
+          $errors = $null
+          [System.Management.Automation.Language.Parser]::ParseFile("$pwd/tools/jarvis/start-jarvis.ps1", [ref]$tokens, [ref]$errors) > $null
+          if ($errors.Count) { throw ($errors | Out-String) }
