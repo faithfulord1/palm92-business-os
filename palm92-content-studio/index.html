@@ -29,7 +29,9 @@
         </div>
         <label>Your raw idea or voice-note transcript<textarea id="idea" rows="5" placeholder="Write naturally. Fragments and rough notes are welcome."></textarea></label>
         <div class="actions"><button id="promptButton" class="button button-secondary" type="button">Build my writing prompt</button><button class="button button-primary" type="submit">Save draft card</button></div>
-        <div id="promptBox" class="prompt-box" hidden><div class="section-heading"><strong>Copy this into ChatGPT, Codex or your local LLM</strong><button id="copyPrompt" class="text-button" type="button">Copy prompt</button></div><pre id="promptText"></pre></div>
+        <div id="promptBox" class="prompt-box" hidden><div class="section-heading"><strong>Your writing prompt</strong><button id="copyPrompt" class="text-button" type="button">Copy prompt</button></div><pre id="promptText"></pre>
+          <div class="local-runner"><p class="eyebrow">OPTIONAL / PRIVATE LOCAL DRAFTING</p><div class="field-grid"><label>Local Ollama address<input id="ollamaUrl" value="http://127.0.0.1:11434" autocomplete="off"></label><label>Model already installed in Ollama<input id="ollamaModel" value="qwen3:4b" autocomplete="off"></label></div><button id="localDraftButton" class="button button-secondary" type="button">Draft with my local model</button><span id="localStatus" role="status" aria-live="polite"></span><p class="hint">This sends the prompt only to Ollama on this computer. Install Ollama and download the model first. If it is unavailable, use Copy prompt with ChatGPT or Codex.</p></div>
+        </div>
       </form>
     </section>
     <section class="panel" aria-labelledby="boardTitle">
