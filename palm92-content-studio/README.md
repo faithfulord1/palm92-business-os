@@ -4,7 +4,7 @@ Local-first content desk for turning Faith's raw ideas into reviewed Palm92 post
 
 ## Run it
 
-Open `index.html` in a current browser. Draft cards are stored in that browser's local storage. Use **Export my content** to download a JSON backup before changing devices or clearing browser data.
+On Linux or macOS, run `./run-local.sh`, then open `http://127.0.0.1:8000`. On Windows, open a terminal in this folder and run `py -m http.server 8000`, then open the same address. A current browser is all the app needs. Draft cards are stored in that browser's local storage. Use **Export my content** to download a JSON backup before changing devices or clearing browser data.
 
 ## Workflow
 
@@ -24,5 +24,6 @@ Open `index.html` in a current browser. Draft cards are stored in that browser's
 ## Project files
 
 - `docs/FREE_TOOLCHAIN.md`: tool scout, limits and fallback route.
-- `docs/VOICE_AND_GOVERNANCE.md`: voice, editorial and review rules.
-- `content/week-one.md`: the first seven-day Palm92 content plan.
+- `docs/VOICE_AND_GOVERNANCE.md`: Faith and Palm92 voice, privacy, evidence and approval rules.
+- `content/week-one.md`: the first seven-day Palm92 content plan and launch post.
+- `run-local.sh`: one-command local server for Linux/macOS.
