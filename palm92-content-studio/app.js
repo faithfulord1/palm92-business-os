@@ -25,6 +25,32 @@ $("copyPrompt").addEventListener("click", async () => {
   try { await navigator.clipboard.writeText($("promptText").textContent); $("copyPrompt").textContent = "Copied"; }
   catch { $("copyPrompt").textContent = "Select and copy the prompt"; }
 });
+$("localDraftButton").addEventListener("click", async () => {
+  const status = $("localStatus");
+  let endpoint;
+  try {
+    endpoint = new URL($("ollamaUrl").value.trim());
+    if (endpoint.protocol !== "http:" || !["127.0.0.1", "localhost", "[::1]"].includes(endpoint.hostname)) throw new Error("Use a local Ollama address such as http://127.0.0.1:11434.");
+  } catch (error) { status.textContent = error.message; return; }
+  const model = $("ollamaModel").value.trim();
+  if (!model) { status.textContent = "Enter the name of a model already installed in Ollama."; return; }
+  const button = $("localDraftButton"); button.disabled = true; status.textContent = `Asking local model ${model} to draft. This can take a little while.`;
+  try {
+    const response = await fetch(`${endpoint.origin}/api/chat`, {
+      method: "POST", credentials: "omit", referrerPolicy: "no-referrer",
+      headers: {"Content-Type":"application/json"},
+      body: JSON.stringify({model, stream:false, messages:[{role:"user",content:makePrompt()}]})
+    });
+    if (!response.ok) throw new Error(`Ollama returned ${response.status}. Check that it is running and that the model is installed.`);
+    const data = await response.json();
+    const draft = data.message?.content?.trim();
+    if (!draft) throw new Error("The local model returned an empty draft. Try again or copy the prompt to ChatGPT/Codex.");
+    cards.unshift({id:crypto.randomUUID(),title:$("title").value.trim() || "Untitled idea",platform:$("platform").value,purpose:$("purpose").value,targetDate:$("targetDate").value,idea:$("idea").value.trim(),draft,status:"Draft",createdAt:new Date().toISOString()});
+    saveCards(); status.textContent = "Draft saved below for your review. It has not been approved or published.";
+  } catch (error) {
+    status.textContent = `${error.message} Nothing has been sent to a cloud model.`;
+  } finally { button.disabled = false; }
+});
 $("contentForm").addEventListener("submit", (event) => {
   event.preventDefault();
   const title = $("title").value.trim();
