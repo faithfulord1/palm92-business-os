@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="theme-color" content="#17131e">
+  <title>Palm92 Content Studio</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="mark">P92</span><div><strong>Palm92 Content Studio</strong><small>Human judgement. AI acceleration. Human verification.</small></div></div>
+    <button id="exportButton" class="button button-quiet" type="button">Export my content</button>
+  </header>
+  <main class="layout">
+    <section class="intro">
+      <p class="eyebrow">YOUR LOCAL-FIRST CONTENT DESK</p>
+      <h1>Turn the idea in your head into content you can stand behind.</h1>
+      <p>Capture a thought, shape it with your AI assistant, review it here, then decide when it is ready. Your drafts stay in this browser until you export them.</p>
+    </section>
+    <section class="panel" aria-labelledby="captureTitle">
+      <div class="section-heading"><div><p class="eyebrow">01 / CAPTURE AND SHAPE</p><h2 id="captureTitle">Start with your idea</h2></div><span class="local-tag">Saved on this device</span></div>
+      <form id="contentForm">
+        <div class="field-grid">
+          <label>Working title<input id="title" required maxlength="120" placeholder="The lesson I learned from..."></label>
+          <label>Platform<select id="platform"><option>LinkedIn</option><option>Instagram</option><option>YouTube Shorts</option><option>Other</option></select></label>
+          <label>Content purpose<select id="purpose"><option>Teach a practical lesson</option><option>Tell a personal story</option><option>Show project progress</option><option>Invite a conversation</option><option>Promote an offer</option></select></label>
+          <label>Target date<input id="targetDate" type="date"></label>
+        </div>
+        <label>Your raw idea or voice-note transcript<textarea id="idea" rows="5" placeholder="Write naturally. Fragments and rough notes are welcome."></textarea></label>
+        <div class="actions"><button id="promptButton" class="button button-secondary" type="button">Build my writing prompt</button><button class="button button-primary" type="submit">Save draft card</button></div>
+        <div id="promptBox" class="prompt-box" hidden><div class="section-heading"><strong>Copy this into ChatGPT, Codex or your local LLM</strong><button id="copyPrompt" class="text-button" type="button">Copy prompt</button></div><pre id="promptText"></pre></div>
+      </form>
+    </section>
+    <section class="panel" aria-labelledby="boardTitle">
+      <div class="section-heading"><div><p class="eyebrow">02 / HUMAN REVIEW</p><h2 id="boardTitle">Your content board</h2></div><span id="draftCount" class="count">0 drafts</span></div>
+      <div id="emptyState" class="empty">Your first draft card will appear here. No account or credit balance required.</div>
+      <div id="board" class="board"></div>
+    </section>
+    <section class="panel compact">
+      <p class="eyebrow">03 / PUBLISH AND LEARN</p>
+      <p>Mark a draft <b>Approved</b> only after you have checked the wording, facts, privacy and visual. Then copy it into your chosen publisher. Record performance separately; follower growth is never guaranteed.</p>
+      <div class="tool-note"><b>Current tool route:</b> ChatGPT/Codex for planning and writing, GitHub for the permanent project record, local Ollama on Linux for private open-model drafting when installed, and Metricool or a native platform scheduler for approved posts. OpenArt and HeyGen are optional production tools, not required to run this desk.</div>
+    </section>
+  </main>
+  <footer>Prototype v0.1 · No automatic posting · No API keys · No paid AI call is made by this page</footer>
+  <script src="app.js"></script>
+</body>
+</html>
